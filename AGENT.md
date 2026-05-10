@@ -60,6 +60,21 @@
 4. 增强物理模板：圆周运动、电场、简单电路、带电粒子运动。
 5. 增加模型保存、历史记录、示例题库。
 
+## 2026-05-10 update
+
+- Added an example problem library in the editor.
+- Added local model saving with `localStorage`.
+- Added saved model loading and deletion.
+- Added JSON export and JSON import for `PhysicsModel`.
+- Added `src/services/modelStorage.ts` as the storage/import/export boundary.
+- Added `src/data/examples.ts` for reusable example model data.
+- Added editor modules:
+  - `ExampleLibrary.vue`
+  - `SavedModelPanel.vue`
+  - `ModelIoPanel.vue`
+- Fixed model cloning for Vue/Pinia proxy objects by serializing physics models as plain JSON.
+- Verified with `npm.cmd run build`.
+
 ## 模块化约定
 
 - 页面只负责编排用户流程，不直接写业务算法。

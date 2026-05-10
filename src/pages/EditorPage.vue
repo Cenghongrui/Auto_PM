@@ -1,16 +1,21 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue';
 import { Download, Pause, Play, RotateCcw } from 'lucide-vue-next';
+import ExampleLibrary from '../components/editor/ExampleLibrary.vue';
+import ModelIoPanel from '../components/editor/ModelIoPanel.vue';
 import ModelSummary from '../components/editor/ModelSummary.vue';
 import ParameterPanel from '../components/editor/ParameterPanel.vue';
+import SavedModelPanel from '../components/editor/SavedModelPanel.vue';
 import TemplateSelector from '../components/editor/TemplateSelector.vue';
 import PhysicsCanvas from '../components/player/PhysicsCanvas.vue';
 import TimelineControls from '../components/player/TimelineControls.vue';
+import { downloadModelJson, parsePhysicsModelJson } from '../services/modelStorage';
 import { usePhysicsModelStore } from '../stores/physicsModel';
 
 const store = usePhysicsModelStore();
 const playing = ref(false);
 const time = ref(0);
+const ioMessage = ref('');
 
 const remotionConfig = computed(() => ({
   compositionId: `physics-${store.currentModel.templateType}`,
@@ -27,17 +32,51 @@ function reset() {
   time.value = 0;
   playing.value = false;
 }
+
+function loadModel(model: typeof store.currentModel) {
+  store.setCurrentModel(model);
+  time.value = 0;
+  playing.value = false;
+}
+
+function saveCurrentModel() {
+  store.saveCurrentModel();
+  ioMessage.value = '当前模型已保存到本地。';
+}
+
+async function importModel(file: File) {
+  try {
+    const text = await file.text();
+    loadModel(parsePhysicsModelJson(text));
+    ioMessage.value = `已导入 ${file.name}。`;
+  } catch {
+    ioMessage.value = '导入失败：JSON 格式不是有效的物理模型。';
+  }
+}
+
+function exportModel() {
+  downloadModelJson(store.currentModel);
+  ioMessage.value = '已生成当前模型的 JSON 文件。';
+}
 </script>
 
 <template>
   <section class="editor-page">
     <aside class="editor-sidebar">
+      <ExampleLibrary @load="loadModel" />
       <TemplateSelector :active-type="store.currentModel.templateType" @select="store.selectTemplate" />
       <ParameterPanel
         :template="store.activeTemplate"
         :parameters="store.currentModel.parameters"
         @update-parameter="store.updateParameter"
       />
+      <SavedModelPanel
+        :models="store.savedModels"
+        @save-model="saveCurrentModel"
+        @load="store.loadSavedModel"
+        @remove="store.deleteSavedModel"
+      />
+      <ModelIoPanel :message="ioMessage" @export="exportModel" @import="importModel" />
       <ModelSummary :model="store.currentModel" />
     </aside>
 
@@ -48,11 +87,11 @@ function reset() {
           <h1>{{ store.currentModel.title }}</h1>
         </div>
         <div class="toolbar" aria-label="播放工具栏">
-          <button class="icon-button" :title="playing ? '暂停' : '播放'" @click="togglePlaying">
+          <button class="icon-button" :title="playing ? '暂停' : '播放'" :aria-label="playing ? '暂停' : '播放'" @click="togglePlaying">
             <Pause v-if="playing" :size="20" aria-hidden="true" />
             <Play v-else :size="20" aria-hidden="true" />
           </button>
-          <button class="icon-button" title="重置时间" @click="reset">
+          <button class="icon-button" title="重置时间" aria-label="重置时间" @click="reset">
             <RotateCcw :size="20" aria-hidden="true" />
           </button>
           <button class="text-button" title="Remotion 导出预留">

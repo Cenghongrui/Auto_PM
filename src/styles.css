@@ -342,16 +342,18 @@ input[type='range']:focus {
 
 .template-list,
 .parameter-list,
-.model-summary {
+.model-summary,
+.library-list,
+.io-actions {
   display: grid;
   gap: 10px;
 }
 
-.template-button {
+.template-button,
+.library-item,
+.saved-main {
   display: grid;
-  grid-template-columns: 28px 1fr;
   gap: 10px;
-  align-items: start;
   width: 100%;
   padding: 12px;
   border: 1px solid #d7dee9;
@@ -359,6 +361,11 @@ input[type='range']:focus {
   color: #334155;
   background: #f8fafc;
   text-align: left;
+}
+
+.template-button {
+  grid-template-columns: 28px 1fr;
+  align-items: start;
 }
 
 .template-button.active {
@@ -369,7 +376,10 @@ input[type='range']:focus {
 
 .template-button small,
 .parameter-row small,
-.model-summary span {
+.model-summary span,
+.library-item span,
+.saved-main span,
+.muted-text {
   display: block;
   margin-top: 4px;
   color: #64748b;
@@ -405,6 +415,79 @@ input[type='range']:focus {
   overflow-wrap: anywhere;
   color: #0f172a;
   line-height: 1.45;
+}
+
+.split-title {
+  justify-content: space-between;
+  width: 100%;
+}
+
+.title-with-icon {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+}
+
+.title-with-icon h2,
+.split-title h2 {
+  margin-bottom: 0;
+}
+
+.library-item:hover,
+.saved-main:hover {
+  border-color: #0f766e;
+  background: #f0fdfa;
+}
+
+.saved-item {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 36px;
+  gap: 8px;
+  align-items: stretch;
+}
+
+.saved-main {
+  min-width: 0;
+}
+
+.mini-button {
+  display: inline-grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+  color: #0f172a;
+  background: #ffffff;
+}
+
+.mini-button.danger {
+  color: #be123c;
+}
+
+.full-width {
+  width: 100%;
+  justify-content: center;
+}
+
+.save-model-button {
+  margin-bottom: 10px;
+}
+
+.file-button {
+  position: relative;
+}
+
+.file-button input {
+  position: absolute;
+  inline-size: 1px;
+  block-size: 1px;
+  opacity: 0;
+}
+
+.muted-text {
+  margin-bottom: 0;
+  font-size: 13px;
 }
 
 .timeline {

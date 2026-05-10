@@ -52,3 +52,38 @@ export interface TemplateDefinition {
   description: string;
   fields: ParameterField[];
 }
+
+export type SceneObjectType = 'block' | 'ball' | 'incline' | 'platform' | 'wall';
+
+export interface SceneObject {
+  id: string;
+  name: string;
+  type: SceneObjectType;
+  x: number;
+  y: number;
+  width: number;
+  height: number;
+  radius?: number;
+  angle: number;
+  mass: number;
+  friction: number;
+  restitution: number;
+  velocityX: number;
+  velocityY: number;
+  isStatic: boolean;
+  color: string;
+}
+
+export interface SceneSettings {
+  gravity: number;
+  duration: number;
+  pixelsPerMeter: number;
+}
+
+export interface FreePhysicsScene {
+  id: string;
+  title: string;
+  settings: SceneSettings;
+  objects: SceneObject[];
+  selectedObjectId?: string;
+}

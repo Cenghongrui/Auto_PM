@@ -75,6 +75,24 @@
 - Fixed model cloning for Vue/Pinia proxy objects by serializing physics models as plain JSON.
 - Verified with `npm.cmd run build`.
 
+## 2026-05-10 free editor update
+
+- Upgraded the editor from template-only editing to a modular free-scene editor.
+- Added Matter.js as the 2D physics engine for rigid bodies, gravity, friction, restitution, and collisions.
+- Added `FreePhysicsScene` and `SceneObject` types for user-defined scene objects.
+- Added free scene modules:
+  - `src/physics/freeSceneFactory.ts`
+  - `src/physics/freeSceneEngine.ts`
+  - `src/components/free-editor/ObjectPalette.vue`
+  - `src/components/free-editor/SceneObjectList.vue`
+  - `src/components/free-editor/SceneObjectInspector.vue`
+  - `src/components/free-editor/SceneSettingsPanel.vue`
+  - `src/components/free-editor/FreeSceneCanvas.vue`
+- Users can now add blocks, balls, inclines, platforms, and walls.
+- Users can select, drag, position, size, rotate, and tune object mass, velocity, friction, restitution, and static/dynamic state.
+- The editor page now prioritizes the modular free-scene workflow while keeping legacy template JSON import/export compatibility.
+- Verified with `npm.cmd run build` and in-app browser checks.
+
 ## 模块化约定
 
 - 页面只负责编排用户流程，不直接写业务算法。

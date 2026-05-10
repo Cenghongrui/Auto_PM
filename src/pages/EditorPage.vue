@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, ref } from 'vue';
+import { computed, onMounted, onUnmounted, ref } from 'vue';
 import { Download, Pause, Play, RotateCcw } from 'lucide-vue-next';
 import ExampleLibrary from '../components/editor/ExampleLibrary.vue';
 import ModelIoPanel from '../components/editor/ModelIoPanel.vue';
@@ -18,6 +18,8 @@ const store = usePhysicsModelStore();
 const playing = ref(false);
 const time = ref(0);
 const ioMessage = ref('');
+let frameId = 0;
+let lastFrame = 0;
 
 const remotionConfig = computed(() => ({
   compositionId: 'free-physics-scene',
@@ -31,16 +33,28 @@ const remotionConfig = computed(() => ({
 
 function togglePlaying() {
   playing.value = !playing.value;
+  lastFrame = 0;
 }
 
 function reset() {
   time.value = 0;
   playing.value = false;
+  lastFrame = 0;
 }
 
 function resetScene() {
   store.resetFreeScene();
   reset();
+}
+
+function tick(timestamp: number) {
+  if (playing.value) {
+    const delta = lastFrame ? (timestamp - lastFrame) / 1000 : 0;
+    time.value = (time.value + delta) % store.freeScene.settings.duration;
+  }
+
+  lastFrame = timestamp;
+  frameId = window.requestAnimationFrame(tick);
 }
 
 function saveCurrentModel() {
@@ -62,6 +76,14 @@ function exportModel() {
   downloadModelJson(store.currentModel);
   ioMessage.value = '已生成当前模板模型的 JSON 文件。';
 }
+
+onMounted(() => {
+  frameId = window.requestAnimationFrame(tick);
+});
+
+onUnmounted(() => {
+  window.cancelAnimationFrame(frameId);
+});
 </script>
 
 <template>
@@ -122,7 +144,9 @@ function exportModel() {
       <section class="teaching-panel">
         <div>
           <h2>教学级物理引擎</h2>
-          <p>当前自由场景使用 Matter.js 进行刚体碰撞、重力、摩擦和弹性模拟。播放前可拖拽物体任意摆放，并在左侧设置质量、速度、角度、摩擦系数和恢复系数。</p>
+          <p>
+            当前自由场景使用 Matter.js 进行刚体碰撞、重力、摩擦和弹性模拟。播放前可拖拽物体任意摆放，并在左侧设置质量、速度、角度、摩擦系数和恢复系数。
+          </p>
         </div>
         <ModelSummary :model="store.currentModel" />
       </section>

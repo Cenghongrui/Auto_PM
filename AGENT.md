@@ -93,6 +93,14 @@
 - The editor page now prioritizes the modular free-scene workflow while keeping legacy template JSON import/export compatibility.
 - Verified with `npm.cmd run build` and in-app browser checks.
 
+## 2026-05-10 playback fix
+
+- Fixed the free editor play button by adding a `requestAnimationFrame` loop in `EditorPage.vue`.
+- The loop advances timeline time while `playing` is true and wraps at the configured scene duration.
+- Reset and play toggles now clear stale frame timing to avoid time jumps.
+- Rewrote corrupted visible Chinese labels in `EditorPage.vue`.
+- Verified in the in-app browser: playback advanced from `0.0s` to `1.5s` after clicking play.
+
 ## 模块化约定
 
 - 页面只负责编排用户流程，不直接写业务算法。
